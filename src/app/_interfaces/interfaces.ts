@@ -1,3 +1,13 @@
+export interface IInitialData {
+  lossedMaterial: {
+    isThereLossedMaterial: boolean
+    completeWeight: number
+  }
+  meshesData: {
+    astm: string
+    weight: number
+  }[]
+}
 export interface IMesh {
   astm: string
   iso: number
