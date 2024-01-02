@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { siteConfig } from '@/config/site'
+import { Provider } from 'jotai'
+import Navbar from '@/components/shared/navbar'
+import Footer from '@/components/shared/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,7 +26,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Provider>
+          <div className="pb-36">
+            <Navbar />
+            <div className="container">{children}</div>
+          </div>
+          <Footer />
+        </Provider>
+      </body>
     </html>
   )
 }
