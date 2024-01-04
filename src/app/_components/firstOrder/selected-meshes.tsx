@@ -14,23 +14,24 @@ const SelectedMeshes = () => {
   return (
     <div>
       <TypographyH2>1. Selecciona los tamices a usar:</TypographyH2>
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="w-min font-bold text-xl" size="lg">
-            Seleccionar mallas
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="h-96">
-          <DialogHeader>
-            <DialogTitle>Mallas ASTM</DialogTitle>
-            <DialogDescription>
-              Selecciona las mallas que deseas agregar:
-            </DialogDescription>
-          </DialogHeader>
-          <ListMeshes />
-        </DialogContent>
-      </Dialog>
+      <div className="my-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-min font-bold text-xl" size="lg">
+              Seleccionar mallas
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="h-96">
+            <DialogHeader>
+              <DialogTitle>Mallas ASTM</DialogTitle>
+              <DialogDescription>
+                Selecciona las mallas que deseas agregar:
+              </DialogDescription>
+            </DialogHeader>
+            <ListMeshes />
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <p>
         Estos son los tamices normados ASTM, si deseas agregar alguno adicional

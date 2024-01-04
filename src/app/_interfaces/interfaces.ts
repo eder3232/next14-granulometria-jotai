@@ -5,6 +5,7 @@ export interface IInitialData {
   }
   meshesData: {
     astm: string
+    iso: number
     weight: number
   }[]
 }
