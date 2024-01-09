@@ -5,6 +5,7 @@ import { siteConfig } from '@/config/site'
 import { Provider } from 'jotai'
 import Navbar from '@/components/shared/navbar'
 import Footer from '@/components/shared/footer'
+import { cn } from '@/lib/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,8 +26,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn('relative min-h-screen antialiased', inter.className)}
+      >
         <Provider>
           <div className="pb-36">
             <Navbar />

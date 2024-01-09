@@ -17,6 +17,10 @@ export const atomGetIsThereLossedMaterial = atom((get) =>
   get(atomIsThereLossedMaterial)
 )
 
+export const atomGetCompleteWeight = atom((get) => get(atomCompleteWeight))
+
+// setters
+
 export const atomSetSwitchLossedMaterial = atom(null, (get, set) => {
   set(atomIsThereLossedMaterial, (prev) => !prev)
 })
