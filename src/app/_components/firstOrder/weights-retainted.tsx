@@ -5,12 +5,12 @@ import GranulometriaTable from '../secondOrder/granulometria-table'
 
 const WeightsRetained = () => {
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <TypographyH2>3. Calcula los pesos retenidos y acumulados:</TypographyH2>
 
       <p>Llena los pesos retenidos en cada tamiz.</p>
 
-      <div>
+      <div className="flex flex-col gap-2">
         <p>
           Puedes cambiar el númmero de decimales mostrados en la tabla aqui:
         </p>

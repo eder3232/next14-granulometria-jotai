@@ -3,7 +3,9 @@ import {
   atomGetMeshesData,
   atomSetMeshesChangeNumberField,
   atomSetMeshesChangeStringField,
+  atomSetMeshesInsert,
 } from '@/app/_store/meshesData'
+import { meshFinder } from '@/app/_utils/meshFinder'
 import { Input } from '@/components/ui/input'
 import {
   Table,
@@ -26,6 +28,9 @@ const GranulometriaTable = () => {
   const [, onInputTableChangeString] = useAtom(atomSetMeshesChangeStringField)
 
   const [, onInputTableChangeNumber] = useAtom(atomSetMeshesChangeNumberField)
+
+  const [, onInsertRow] = useAtom(atomSetMeshesInsert)
+
   return (
     <div className="max-w-full overflow-x-auto overflow-y-visible lg:max-w-min">
       <div className="px-4 bg-muted rounded-lg">
@@ -55,7 +60,7 @@ const GranulometriaTable = () => {
           <TableBody>
             {meshesData.map((mesh, index) => (
               <TableRow
-                key={index}
+                key={mesh.id}
                 className={cn(
                   '[&>*]:py-1 [&>*]:px-1',
                   '[&>.eder-result]:text-right'
@@ -63,7 +68,15 @@ const GranulometriaTable = () => {
               >
                 <TableCell className="text-center">
                   <button
-                    onClick={() => console.log('raa +')}
+                    onClick={() =>
+                      onInsertRow({
+                        mesh: meshFinder(
+                          meshesData[index].iso,
+                          meshesData[index + 1].iso
+                        ),
+                        index: index + 1,
+                      })
+                    }
                     disabled={index === meshesData.length - 1}
                     className={cn(
                       'text-primary disabled:text-muted-foreground'

@@ -56,15 +56,16 @@ export const atomGetErrors = atom<IError[]>((get) => {
 
   const meshesData = get(atomGetMeshesData)
   const isos = meshesData.map((mesh) => mesh.iso)
-  const isosSorted = [...isos].sort((a, b) => a - b)
-  const indexError = [...isos].findIndex(
-    (iso, index) => iso !== isosSorted[index]
-  )
 
-  if (
-    isos.length !== isosSorted.length ||
-    isos.every((value, index) => value !== isosSorted[index])
-  ) {
+  let indexError = -1
+  for (let i = 0; i < isos.length - 1; i++) {
+    if (isos[i] < isos[i + 1]) {
+      indexError = i + 1
+      break
+    }
+  }
+
+  if (indexError !== -1) {
     listErrors.push({
       ...errorsCodes[100],
       message:

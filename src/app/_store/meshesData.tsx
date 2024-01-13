@@ -1,15 +1,18 @@
-import { atomWithImmer } from 'jotai-immer'
-import { initialData } from '../_data/initialData'
-import { IGranulometriaData } from '../_interfaces/interfaces'
+import { produce } from 'immer'
 import { atom } from 'jotai'
+import { v4 as uuidv4 } from 'uuid'
+import { initialData } from '../_data/initialData'
+import {
+  IGranulometriaData,
+  IGranulometriaDataWithId,
+} from '../_interfaces/interfaces'
 import { atomCompleteWeight, atomIsThereLossedMaterial } from './lossedMaterial'
-import LossedMaterial from '../_components/firstOrder/lossed-material'
 
 type stringFields = 'astm'
 type numberFields = 'iso' | 'weight'
 
-const atomMeshesData = atomWithImmer<IGranulometriaData[]>(
-  initialData.meshesData
+const atomMeshesData = atom<IGranulometriaDataWithId[]>(
+  initialData.meshesData.map((e) => ({ ...e, id: uuidv4() }))
 )
 
 // getters:
@@ -55,9 +58,17 @@ export const atomSetMeshesChangeStringField = atom(
       field,
     }: { value: string; index: number; field: stringFields }
   ) => {
-    set(atomMeshesData, (prev) => {
-      prev[index][field] = value
-    })
+    // set(atomMeshesData, (prev) => {
+    //   prev[index][field] = value
+    // })
+    const baseState = _get(atomMeshesData)
+
+    set(
+      atomMeshesData,
+      produce(baseState, (draft) => {
+        draft[index][field] = value
+      })
+    )
   }
 )
 
@@ -72,8 +83,30 @@ export const atomSetMeshesChangeNumberField = atom(
       field,
     }: { value: number; index: number; field: numberFields }
   ) => {
-    set(atomMeshesData, (prev) => {
-      prev[index][field] = value
-    })
+    // set(atomMeshesData, (prev) => {
+    //   prev[index][field] = value
+    // })
+
+    const baseState = _get(atomMeshesData)
+
+    set(
+      atomMeshesData,
+      produce(baseState, (draft) => {
+        draft[index][field] = value
+      })
+    )
+  }
+)
+
+export const atomSetMeshesInsert = atom(
+  null,
+  (_get, set, { mesh, index }: { mesh: IGranulometriaData; index: number }) => {
+    const baseState = _get(atomMeshesData)
+    set(
+      atomMeshesData,
+      produce(baseState, (draft) => {
+        draft.splice(index, 0, { ...mesh, id: uuidv4() })
+      })
+    )
   }
 )

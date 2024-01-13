@@ -24,6 +24,11 @@ export interface IGranulometriaData {
   iso: number
   weight: number
 }
+
+export interface IGranulometriaDataWithId extends IGranulometriaData {
+  id: string
+}
+
 export interface IReactData {
   astm: string
   iso: number
