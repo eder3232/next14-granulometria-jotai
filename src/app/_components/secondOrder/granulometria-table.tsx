@@ -1,8 +1,11 @@
+import { atomGetDecimals } from '@/app/_store/decimals'
 import { atomGetIsThereLossedMaterial } from '@/app/_store/lossedMaterial'
 import {
   atomGetMeshesData,
+  atomGetMeshesResults,
   atomSetMeshesChangeNumberField,
   atomSetMeshesChangeStringField,
+  atomSetMeshesDelete,
   atomSetMeshesInsert,
 } from '@/app/_store/meshesData'
 import { meshFinder } from '@/app/_utils/meshFinder'
@@ -18,18 +21,23 @@ import {
 import { cn } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import { MinusCircle, PlusCircle } from 'lucide-react'
-import React from 'react'
 
 const GranulometriaTable = () => {
   const [isThereLossMaterial] = useAtom(atomGetIsThereLossedMaterial)
 
   const [meshesData] = useAtom(atomGetMeshesData)
 
+  const [meshesDataResults] = useAtom(atomGetMeshesResults)
+
+  const [decimals] = useAtom(atomGetDecimals)
+
   const [, onInputTableChangeString] = useAtom(atomSetMeshesChangeStringField)
 
   const [, onInputTableChangeNumber] = useAtom(atomSetMeshesChangeNumberField)
 
   const [, onInsertRow] = useAtom(atomSetMeshesInsert)
+
+  const [, onRemoveRow] = useAtom(atomSetMeshesDelete)
 
   return (
     <div className="max-w-full overflow-x-auto overflow-y-visible lg:max-w-min">
@@ -88,7 +96,7 @@ const GranulometriaTable = () => {
 
                 <TableCell className="px-1 text-center">
                   <button
-                    onClick={() => console.log('raa -')}
+                    onClick={() => onRemoveRow({ index: index })}
                     disabled={index === 0}
                     className={cn(
                       'text-primary disabled:text-muted-foreground'
@@ -144,6 +152,54 @@ const GranulometriaTable = () => {
                     }
                   />
                 </TableCell>
+
+                {/* Results */}
+
+                {isThereLossMaterial &&
+                  meshesDataResults.length === meshesData.length && (
+                    <TableCell className="text-center eder-result">
+                      {meshesDataResults[index].pesoCorregido.toFixed(decimals)}
+                    </TableCell>
+                  )}
+
+                {/* Se muestra un guion si los la longitud de los resultados no coinciden con la longitud de la data, ocurre cuando se agrega o elimina una fila.
+                 */}
+                {isThereLossMaterial &&
+                  meshesDataResults.length !== meshesData.length && (
+                    <TableCell className="text-center eder-result">-</TableCell>
+                  )}
+
+                {meshesDataResults.length === meshesData.length && (
+                  <TableCell className="text-center eder-result">
+                    {meshesDataResults[index].retenido.toFixed(decimals)}
+                  </TableCell>
+                )}
+
+                {meshesDataResults.length !== meshesData.length && (
+                  <TableCell className="text-center eder-result">-</TableCell>
+                )}
+
+                {meshesDataResults.length === meshesData.length && (
+                  <TableCell className="text-center eder-result">
+                    {meshesDataResults[index].retenidoAcumulado.toFixed(
+                      decimals
+                    )}
+                  </TableCell>
+                )}
+
+                {meshesDataResults.length !== meshesData.length && (
+                  <TableCell className="text-center eder-result">-</TableCell>
+                )}
+
+                {meshesDataResults.length === meshesData.length && (
+                  <TableCell className="text-center eder-result">
+                    {meshesDataResults[index].pasante.toFixed(decimals)}
+                  </TableCell>
+                )}
+
+                {meshesDataResults.length !== meshesData.length && (
+                  <TableCell className="text-center eder-result">-</TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

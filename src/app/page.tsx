@@ -6,6 +6,7 @@ import LossedMaterial from './_components/firstOrder/lossed-material'
 import WeightsRetained from './_components/firstOrder/weights-retainted'
 import Errors from './_components/firstOrder/errors'
 import Example from './_components/firstOrder/example'
+import Results from './_components/firstOrder/results'
 
 export default function Home() {
   return (
@@ -21,6 +22,8 @@ export default function Home() {
         <WeightsRetained />
 
         <Errors />
+
+        <Results />
 
         {/* <Example /> */}
       </div>

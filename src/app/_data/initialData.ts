@@ -3,7 +3,7 @@ import { IInitialData } from '../_interfaces/interfaces'
 export const initialData: IInitialData = {
   lossedMaterial: {
     isThereLossedMaterial: false,
-    completeWeight: 0,
+    completeWeight: 150,
   },
   meshesData: [
     { astm: '3/4"', iso: 19, weight: 10 },
@@ -17,5 +17,6 @@ export const initialData: IInitialData = {
     { astm: 'No. 50', iso: 0.3, weight: 10 },
     { astm: 'No. 100', iso: 0.15, weight: 10 },
     { astm: 'No. 200', iso: 0.075, weight: 10 },
+    { astm: 'Fondo', iso: 0, weight: 10 },
   ],
 }

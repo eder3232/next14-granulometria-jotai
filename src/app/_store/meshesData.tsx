@@ -5,6 +5,7 @@ import { initialData } from '../_data/initialData'
 import {
   IGranulometriaData,
   IGranulometriaDataWithId,
+  IResults,
 } from '../_interfaces/interfaces'
 import { atomCompleteWeight, atomIsThereLossedMaterial } from './lossedMaterial'
 
@@ -19,7 +20,7 @@ const atomMeshesData = atom<IGranulometriaDataWithId[]>(
 
 export const atomGetMeshesData = atom((get) => get(atomMeshesData))
 
-export const atomGetMeshesResults = atom((get) => {
+export const atomGetMeshesResults = atom<IResults[]>((get) => {
   //TODO  corregir:
   const meshesData = get(atomMeshesData)
   const completeWeight = get(atomCompleteWeight)
@@ -27,19 +28,45 @@ export const atomGetMeshesResults = atom((get) => {
 
   const totalWeight = meshesData.reduce((acc, curr) => acc + curr.weight, 0)
 
-  const lossedMaterialWeight = totalWeight - completeWeight
+  let lossedMaterialWeight = completeWeight - totalWeight
 
-  const meshesResults = meshesData.map((mesh) => {
-    const { weight } = mesh
-    const correctedWeight = isThereLossedMaterial
-      ? weight - (lossedMaterialWeight * weight) / completeWeight
-      : weight
-    const retainedPercentage = (correctedWeight * 100) / completeWeight
-    return {
-      ...mesh,
-      correctedWeight,
-      retainedPercentage,
-    }
+  if (!isThereLossedMaterial) {
+    lossedMaterialWeight = 0
+  }
+
+  const meshesResults = meshesData.map((mesh) => ({
+    pesoCorregido: 0,
+    retenido: 0,
+    retenidoAcumulado: 0,
+    pasante: 0,
+  }))
+
+  // Si hay perdida, hacer la corrección de pesos:
+
+  let correctionForEachMesh = lossedMaterialWeight / meshesData.length
+
+  meshesResults.forEach((meshResult, index) => {
+    meshResult.pesoCorregido = meshesData[index].weight + correctionForEachMesh
+  })
+
+  const newTotalWeight = meshesResults.reduce(
+    (acc, curr) => acc + curr.pesoCorregido,
+    0
+  )
+
+  meshesResults.forEach((meshResult, index) => {
+    meshResult.retenido = (meshResult.pesoCorregido / newTotalWeight) * 100
+  })
+
+  meshesResults.forEach((meshResult, index) => {
+    meshResult.retenidoAcumulado =
+      index === 0
+        ? meshResult.retenido
+        : meshResult.retenido + meshesResults[index - 1].retenidoAcumulado
+  })
+
+  meshesResults.forEach((meshResult, index) => {
+    meshResult.pasante = 100 - meshResult.retenidoAcumulado
   })
 
   return meshesResults
@@ -58,9 +85,6 @@ export const atomSetMeshesChangeStringField = atom(
       field,
     }: { value: string; index: number; field: stringFields }
   ) => {
-    // set(atomMeshesData, (prev) => {
-    //   prev[index][field] = value
-    // })
     const baseState = _get(atomMeshesData)
 
     set(
@@ -83,10 +107,6 @@ export const atomSetMeshesChangeNumberField = atom(
       field,
     }: { value: number; index: number; field: numberFields }
   ) => {
-    // set(atomMeshesData, (prev) => {
-    //   prev[index][field] = value
-    // })
-
     const baseState = _get(atomMeshesData)
 
     set(
@@ -106,6 +126,19 @@ export const atomSetMeshesInsert = atom(
       atomMeshesData,
       produce(baseState, (draft) => {
         draft.splice(index, 0, { ...mesh, id: uuidv4() })
+      })
+    )
+  }
+)
+
+export const atomSetMeshesDelete = atom(
+  null,
+  (_get, set, { index }: { index: number }) => {
+    const baseState = _get(atomMeshesData)
+    set(
+      atomMeshesData,
+      produce(baseState, (draft) => {
+        draft.splice(index, 1)
       })
     )
   }
